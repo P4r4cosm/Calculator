@@ -16,5 +16,10 @@ namespace Calculator
         {
             InitializeComponent();
         }
+
+        private void button_mclear_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
