@@ -55,7 +55,11 @@
             this.button23 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
+            this.RoundingMode = new System.Windows.Forms.TrackBar();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.RoundingMode)).BeginInit();
             this.SuspendLayout();
             // 
             // Input
@@ -153,7 +157,7 @@
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(76, 83);
             this.button4.TabIndex = 3;
-            this.button4.Text = "button4";
+            this.button4.Text = "M+";
             this.button4.UseVisualStyleBackColor = true;
             // 
             // button5
@@ -430,12 +434,45 @@
             this.button25.Text = "=";
             this.button25.UseVisualStyleBackColor = false;
             // 
+            // RoundingMode
+            // 
+            this.RoundingMode.AutoSize = false;
+            this.RoundingMode.LargeChange = 1;
+            this.RoundingMode.Location = new System.Drawing.Point(180, 86);
+            this.RoundingMode.Maximum = 1;
+            this.RoundingMode.Name = "RoundingMode";
+            this.RoundingMode.Size = new System.Drawing.Size(105, 34);
+            this.RoundingMode.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(291, 86);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(165, 39);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "Округление в большую сторону";
+            // 
+            // label2
+            // 
+            this.label2.AllowDrop = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label2.ForeColor = System.Drawing.Color.White;
+            this.label2.Location = new System.Drawing.Point(15, 87);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(159, 36);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "Округление в меньшую сторону";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.ClientSize = new System.Drawing.Size(424, 549);
+            this.ClientSize = new System.Drawing.Size(566, 676);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.RoundingMode);
             this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.Input);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -443,6 +480,7 @@
             this.Name = "Form1";
             this.Text = "Calculator";
             this.flowLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.RoundingMode)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -476,6 +514,9 @@
         private System.Windows.Forms.Button button23;
         private System.Windows.Forms.Button button24;
         private System.Windows.Forms.Button button25;
+        private System.Windows.Forms.TrackBar RoundingMode;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }
 
