@@ -25,8 +25,9 @@ namespace Calculator
         {
            switch (function.Func)
             {
-                case "sin":return Math.Sin(a);
+                case "sin": return Math.Sin(a);
                 case "cos": return Math.Cos(a);
+                case "sqrt": return Math.Sqrt(a);
                 default: return 0;
             }
         }
