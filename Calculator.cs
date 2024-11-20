@@ -37,7 +37,7 @@ namespace Calculator
                 case Operation.Divide: return a / b;
                 case Operation.Power: return Math.Pow(a, b);
                 case Operation.Modulo: return a % b;
-                default: return 0;
+                default: return a;
             }
         }
 

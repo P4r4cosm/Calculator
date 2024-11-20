@@ -15,200 +15,205 @@ namespace Calculator
         private double result = 0;
         private double currentNumber = 0;
         private Calculator.Operation currentOperation;
+        private double memoryValue = 0;
 
         public Form1()
         {
             InitializeComponent();
-            Input.Text = "0";
+            Input.Text = "0";           
+            RoundingMode.Minimum = 0;
+            RoundingMode.Maximum = 2;
+            RoundingMode.Value = 1;
         }
 
+
+        //ОБРАБОТКА НАЖАТИЙ НА КНОПКИ
         private void button_Click(object sender, EventArgs e)
         {
-            Button button = (Button)sender;
-            currentNumber = currentNumber * 10 + Convert.ToDouble(button.Text);
-            Input.Text = currentNumber.ToString();
-        }
+            Button button = sender as Button;
 
-        private void operation_Click(object sender, EventArgs e)
-        {
-            Button button = (Button)sender;
-            string operation = button.Text;
-
-            if (currentOperation != null)
+            if (Input.Text == "0")
             {
-                result = Calculator.DoOperation(result, currentNumber, currentOperation);
-                Input.Text = result.ToString();
+                Input.Text = button.Text;
             }
             else
             {
-                result = currentNumber;
+                Input.Text += button.Text;
             }
-
-            currentOperation = GetOperationFromString(operation);
-            currentNumber = 0;
-        }
-
-        private Calculator.Operation GetOperationFromString(string operation)
-        {
-            switch (operation)
-            {
-                case "+": return Calculator.Operation.Add;
-                case "-": return Calculator.Operation.Subtract;
-                case "*": return Calculator.Operation.Multiply;
-                case "/": return Calculator.Operation.Divide;
-                case "^": return Calculator.Operation.Power;
-                case "%": return Calculator.Operation.Modulo;
-                default: return Calculator.Operation.Add;
-            }
-        }
-
-        private void button_mclear_Click(object sender, EventArgs e)
-        {
-         
-        }
-
-        private void button_msave_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button_msub_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button_madd_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button_sqrt_Click(object sender, EventArgs e)
-        {
-            result = Calculator.DoFunction(Convert.ToInt16(Input.Text), Calculator.Function.Sqrt);
-            Input.Text = result.ToString();
-        }
-
-        private void button_add_Click(object sender, EventArgs e)
-        {
-            operation_Click(sender, e);
         }
 
         private void button_solve_Click(object sender, EventArgs e)
         {
-            if (currentOperation != null)
+            double secondNumber = double.Parse(Input.Text);
+            result = Calculator.DoOperation(currentNumber, secondNumber, currentOperation); 
+            Input.Text = result.ToString();
+            currentNumber = result;  
+        }
+
+
+        //ОБРАБОТКА ФУНКЦИЙ
+        private void button_sqrt_Click(object sender, EventArgs e)
+        {
+            currentNumber = double.Parse(Input.Text); 
+            result = Calculator.DoFunction(currentNumber, Calculator.Function.Sqrt); 
+            Input.Text = result.ToString();
+        }
+
+        private void button_sin_Click(object sender, EventArgs e)
+        {
+            currentNumber = double.Parse(Input.Text); 
+            result = Calculator.DoFunction(currentNumber, Calculator.Function.Sin); 
+            Input.Text = result.ToString();
+        }
+
+        private void button_cos_Click(object sender, EventArgs e)
+        {
+            currentNumber = double.Parse(Input.Text); 
+            result = Calculator.DoFunction(currentNumber, Calculator.Function.Cos); 
+            Input.Text = result.ToString();
+        }
+        //TODO: ПОФИКСИТЬ НЕПРАВИЛЬНОЕ СЧИТЫВАНИЕ ПОЛЗУНКА
+        private void RoundingMode_Scroll(object sender, EventArgs e)
+        {
+            int value = RoundingMode.Value;
+
+            double roundedNumber = double.Parse(Input.Text);
+
+            if (value < 33) 
             {
-                result = Calculator.DoOperation(result, currentNumber, currentOperation);
-                Input.Text = result.ToString();
-                currentOperation = Calculator.Operation.Add; 
+                roundedNumber = Calculator.DoFunction(roundedNumber, Calculator.Function.Floor);
+            }
+            else if (value > 66) 
+            {
+                roundedNumber = Calculator.DoFunction(roundedNumber, Calculator.Function.Ceil);
+            }
+
+            Input.Text = roundedNumber.ToString();
+        }
+
+
+        //ОБРАБОТКА ОПЕРАЦИЙ
+        private void button_add_Click(object sender, EventArgs e)
+        {
+            currentOperation = Calculator.Operation.Add;
+            currentNumber = double.Parse(Input.Text);
+            Input.Text = "0";  
+        }
+
+        private void button_sub_Click(object sender, EventArgs e)
+        {
+            currentOperation = Calculator.Operation.Subtract;
+            currentNumber = double.Parse(Input.Text);
+            Input.Text = "0";  
+        }
+
+        private void button_mul_Click(object sender, EventArgs e)
+        {
+            currentOperation = Calculator.Operation.Multiply;
+            currentNumber = double.Parse(Input.Text);
+            Input.Text = "0"; 
+        }
+
+        private void button_div_Click(object sender, EventArgs e)
+        {
+            currentOperation = Calculator.Operation.Divide;
+            currentNumber = double.Parse(Input.Text);
+            Input.Text = "0";  
+        }
+
+        private void button_raise_Click(object sender, EventArgs e)
+        {
+            currentOperation = Calculator.Operation.Power;
+            currentNumber = double.Parse(Input.Text);
+            Input.Text = "0";  
+        }
+
+        private void button_mod_Click(object sender, EventArgs e)
+        {
+            currentOperation = Calculator.Operation.Modulo;
+            currentNumber = double.Parse(Input.Text);
+            Input.Text = "0"; 
+        }
+
+        //ОБАБОТКА MC, MS B Т.Д.
+        private void button_mclear_Click(object sender, EventArgs e)
+        {
+            memoryValue = 0;
+        }
+
+        private void button_msave_Click(object sender, EventArgs e)
+        {
+            memoryValue = result;
+        }
+
+        private void button_msub_Click(object sender, EventArgs e)
+        {
+            result = result - memoryValue;
+            Input.Text = result.ToString();
+        }
+
+        private void button_madd_Click(object sender, EventArgs e)
+        {
+            result = result + memoryValue;
+            Input.Text = result.ToString();
+        }
+
+        //ОБРАБОТКА ЦИФР И СИМВОЛОВ
+        private void UpdateInput(string text)
+        {
+            if (Input.Text == "0")
+            {
+                Input.Text = text;
+            }
+            else
+            {
+                Input.Text += text;
             }
         }
 
         private void button_7_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "7";
-            }
-            else
-            {
-                Input.Text += "7";
-            }
+            UpdateInput("7");
         }
 
         private void button_8_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "8";
-            }
-            else
-            {
-                Input.Text += "8";
-            }
+            UpdateInput("8");
         }
 
         private void button_9_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "9";
-            }
-            else
-            {
-                Input.Text += "9";
-            }
+            UpdateInput("9");
         }
 
         private void button_4_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "4";
-            }
-            else
-            {
-                Input.Text += "4";
-            }
+            UpdateInput("4");
         }
 
         private void button_5_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "5";
-            }
-            else
-            {
-                Input.Text += "5";
-            }
+            UpdateInput("5");
         }
 
         private void button_6_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "6";
-            }
-            else
-            {
-                Input.Text += "6";
-            }
+            UpdateInput("6");
         }
 
         private void button_1_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "1";
-            }
-            else
-            {
-                Input.Text += "1";
-            }
+            UpdateInput("1");
         }
 
         private void button_2_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "2";
-            }
-            else
-            {
-                Input.Text += "2";
-            }
+            UpdateInput("2");
         }
 
         private void button_3_onclick(object sender, EventArgs e)
         {
-            if (Input.Text == "0")
-            {
-                Input.Text = "3";
-            }
-            else
-            {
-                Input.Text += "3";
-            }
+            UpdateInput("3");
         }
 
         private void button_00_onclick(object sender, EventArgs e)
@@ -217,18 +222,13 @@ namespace Calculator
             {
                 Input.Text += "00";
             }
-            
         }
 
         private void button_0_input(object sender, EventArgs e)
         {
-            if (Input.Text != "0")
-            {
-                Input.Text += "0";
-            }
-            
+            UpdateInput("0");
         }
-
+        //TODO:ПОФИКСИТЬ НЕЧИТАЕМОСТЬ ТОЧКИ
         private void button_dot_onclick(object sender, EventArgs e)
         {
             Input.Text += ".";
@@ -238,5 +238,10 @@ namespace Calculator
         {
             Input.Text = "0";
         }
+        private void Input_Click(object sender, EventArgs e)
+        {
+
+        }
+        
     }
 }
