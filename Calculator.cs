@@ -6,28 +6,51 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    class Calculator
+    public class Calculator
     {
-        static double DoOperation(double a, double b, Operation operation)
+        public enum Operation
         {
-            switch (operation.MathOperation)
+            Add,      
+            Subtract, 
+            Multiply, 
+            Divide,   
+            Power,    
+            Modulo    
+        }
+
+        public enum Function
+        {
+            Sin,
+            Cos,
+            Sqrt,
+            Floor,
+            Ceil
+        }
+
+        public static double DoOperation(double a, double b, Operation operation)
+        {
+            switch (operation)
             {
-                case "+": return a+b;
-                case "-": return a-b;
-                case "*": return a*b;
-                case "/": return a/b;
-                case "^": return Math.Pow(a, b);
-                case "%": return a%b;
+                case Operation.Add: return a + b;
+                case Operation.Subtract: return a - b;
+                case Operation.Multiply: return a * b;
+                case Operation.Divide: return a / b;
+                case Operation.Power: return Math.Pow(a, b);
+                case Operation.Modulo: return a % b;
                 default: return 0;
             }
         }
-        static double DoFunction(double a, Function function)
+
+
+        public static double DoFunction(double a, Function function)
         {
-           switch (function.Func)
+            switch (function)
             {
-                case "sin": return Math.Sin(a);
-                case "cos": return Math.Cos(a);
-                case "sqrt": return Math.Sqrt(a);
+                case Function.Sin: return Math.Sin(a);
+                case Function.Cos: return Math.Cos(a);
+                case Function.Sqrt: return Math.Sqrt(a);
+                case Function.Floor: return Math.Floor(a);
+                case Function.Ceil: return Math.Ceiling(a);
                 default: return 0;
             }
         }
