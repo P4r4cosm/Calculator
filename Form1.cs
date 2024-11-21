@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -228,10 +229,12 @@ namespace Calculator
         {
             UpdateInput("0");
         }
-        //TODO:ПОФИКСИТЬ НЕЧИТАЕМОСТЬ ТОЧКИ
         private void button_dot_onclick(object sender, EventArgs e)
         {
-            Input.Text += ".";
+            if (Input.Text[Input.Text.Length - 1].ToString() 
+                != CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
+                Input.Text += CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
         }
 
         private void button_c_onclick(object sender, EventArgs e)
