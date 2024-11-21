@@ -20,11 +20,13 @@ namespace Calculator
 
         public enum Function
         {
+            Floor = 0,
+            WithoutRound = 1,
+            Ceil = 2,
             Sin,
             Cos,
             Sqrt,
-            Floor,
-            Ceil
+            
         }
 
         public static double DoOperation(double a, double b, Operation operation)
@@ -51,6 +53,7 @@ namespace Calculator
                 case Function.Sqrt: return Math.Sqrt(a);
                 case Function.Floor: return Math.Floor(a);
                 case Function.Ceil: return Math.Ceiling(a);
+                case Function.WithoutRound: return a;
                 default: return 0;
             }
         }

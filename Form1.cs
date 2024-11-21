@@ -46,7 +46,9 @@ namespace Calculator
         private void button_solve_Click(object sender, EventArgs e)
         {
             double secondNumber = double.Parse(Input.Text);
-            result = Calculator.DoOperation(currentNumber, secondNumber, currentOperation); 
+            result = Calculator.DoFunction
+                (Calculator.DoOperation(currentNumber, secondNumber, currentOperation),
+                (Calculator.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
             currentNumber = result;  
         }
@@ -56,43 +58,27 @@ namespace Calculator
         private void button_sqrt_Click(object sender, EventArgs e)
         {
             currentNumber = double.Parse(Input.Text); 
-            result = Calculator.DoFunction(currentNumber, Calculator.Function.Sqrt); 
+            result = Calculator.DoFunction(Calculator.DoFunction(currentNumber, Calculator.Function.Sqrt),
+                (Calculator.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
         }
 
         private void button_sin_Click(object sender, EventArgs e)
         {
             currentNumber = double.Parse(Input.Text); 
-            result = Calculator.DoFunction(currentNumber, Calculator.Function.Sin); 
+            result = Calculator.DoFunction(Calculator.DoFunction(currentNumber, Calculator.Function.Sin),
+                (Calculator.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
         }
 
         private void button_cos_Click(object sender, EventArgs e)
         {
             currentNumber = double.Parse(Input.Text); 
-            result = Calculator.DoFunction(currentNumber, Calculator.Function.Cos); 
+            result = Calculator.DoFunction(Calculator.DoFunction(currentNumber, Calculator.Function.Cos),
+                (Calculator.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
         }
-        //TODO: ПОФИКСИТЬ НЕПРАВИЛЬНОЕ СЧИТЫВАНИЕ ПОЛЗУНКА
-        private void RoundingMode_Scroll(object sender, EventArgs e)
-        {
-            int value = RoundingMode.Value;
-
-            double roundedNumber = double.Parse(Input.Text);
-
-            if (value < 33) 
-            {
-                roundedNumber = Calculator.DoFunction(roundedNumber, Calculator.Function.Floor);
-            }
-            else if (value > 66) 
-            {
-                roundedNumber = Calculator.DoFunction(roundedNumber, Calculator.Function.Ceil);
-            }
-
-            Input.Text = roundedNumber.ToString();
-        }
-
-
+        
         //ОБРАБОТКА ОПЕРАЦИЙ
         private void button_add_Click(object sender, EventArgs e)
         {
