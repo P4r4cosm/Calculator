@@ -467,7 +467,7 @@
             this.RoundingMode.Name = "RoundingMode";
             this.RoundingMode.Size = new System.Drawing.Size(112, 34);
             this.RoundingMode.TabIndex = 1;
-            this.RoundingMode.Scroll += new System.EventHandler(this.RoundingMode_Scroll);
+            //this.RoundingMode.Scroll += new System.EventHandler(this.RoundingMode_Scroll);
             // 
             // button_sin
             // 
