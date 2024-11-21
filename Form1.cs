@@ -126,17 +126,29 @@ namespace Calculator
         private void button_mclear_Click(object sender, EventArgs e)
         {
             memoryValue = 0;
+            memoryValue -= 0; // Вычитаем текущее значение из памяти
+            memoNum.Text = memoryValue.ToString();
         }
 
         private void button_msave_Click(object sender, EventArgs e)
         {
-            memoryValue = result;
+            if (double.TryParse(Input.Text, out double value))
+            {
+                memoryValue = value;
+                memoNum.Text = memoryValue.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Invalid input. Unable to save to memory.");
+            }
         }
+
 
         private void button_msub_Click(object sender, EventArgs e)
         {
             result = result - memoryValue;
             Input.Text = result.ToString();
+
         }
 
         private void button_madd_Click(object sender, EventArgs e)
@@ -231,6 +243,18 @@ namespace Calculator
         {
 
         }
-        
+
+        private void inversButt_Click(object sender, EventArgs e)
+        {
+            if (double.TryParse(Input.Text, out double currentValue))
+            {
+                currentValue = -currentValue; // Инвертируем знак
+                Input.Text = currentValue.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Invalid input!"); // Если ввод некорректный
+            }
+        }
     }
 }
