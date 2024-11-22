@@ -170,69 +170,32 @@ namespace Calculator
             }
         }
 
-        private void button_7_onclick(object sender, EventArgs e)
+        private void NumberButton_Click(object sender, EventArgs e)
         {
-            UpdateInput("7");
-        }
-
-        private void button_8_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("8");
-        }
-
-        private void button_9_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("9");
-        }
-
-        private void button_4_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("4");
-        }
-
-        private void button_5_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("5");
-        }
-
-        private void button_6_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("6");
-        }
-
-        private void button_1_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("1");
-        }
-
-        private void button_2_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("2");
-        }
-
-        private void button_3_onclick(object sender, EventArgs e)
-        {
-            UpdateInput("3");
-        }
-
-        private void button_00_onclick(object sender, EventArgs e)
-        {
-            if (Input.Text != "0")
+            if (sender is Button button)
             {
-                Input.Text += "00";
+                string buttonText = button.Text;
+
+                string decimalSeparator = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+                if (buttonText == "." || buttonText == ",")
+                {
+                    if (!Input.Text.Contains(decimalSeparator))
+                    {
+                        Input.Text += decimalSeparator;
+                    }
+                }
+                else
+                {
+                    if (Input.Text == "0")
+                    {
+                        Input.Text = buttonText; 
+                    }
+                    else
+                    {
+                        Input.Text += buttonText;
+                    }
+                }
             }
-        }
-
-        private void button_0_input(object sender, EventArgs e)
-        {
-            UpdateInput("0");
-        }
-        private void button_dot_onclick(object sender, EventArgs e)
-        {
-            if (Input.Text[Input.Text.Length - 1].ToString() 
-                != CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)
-                Input.Text += CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-
         }
 
         private void button_c_onclick(object sender, EventArgs e)
