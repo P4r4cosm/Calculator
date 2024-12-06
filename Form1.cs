@@ -144,18 +144,32 @@ namespace Calculator
         }
 
 
-        private void button_msub_Click(object sender, EventArgs e)
-        {
-            result = result - memoryValue;
-            Input.Text = result.ToString();
-
-        }
-
         private void button_madd_Click(object sender, EventArgs e)
         {
-            result = result + memoryValue;
-            Input.Text = result.ToString();
+            if (double.TryParse(Input.Text, out double currentValue))
+            {
+                memoryValue += currentValue; // Увеличиваем значение памяти
+                memoNum.Text = memoryValue.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Invalid input for M+.");
+            }
         }
+
+        private void button_msub_Click(object sender, EventArgs e)
+        {
+            if (double.TryParse(Input.Text, out double currentValue))
+            {
+                memoryValue -= currentValue; // Уменьшаем значение памяти
+                memoNum.Text = memoryValue.ToString();
+            }
+            else
+            {
+                MessageBox.Show("Invalid input for M-.");
+            }
+        }
+
 
         //ОБРАБОТКА ЦИФР И СИМВОЛОВ
         private void UpdateInput(string text)
