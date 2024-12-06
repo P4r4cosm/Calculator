@@ -15,7 +15,7 @@ namespace Calculator
     {
         private double result = 0;
         private double currentNumber = 0;
-        private Calculator.Operation currentOperation;
+        private Calculator1.Operation currentOperation;
         private double memoryValue = 0;
 
         public Form1()
@@ -46,9 +46,9 @@ namespace Calculator
         private void button_solve_Click(object sender, EventArgs e)
         {
             double secondNumber = double.Parse(Input.Text);
-            result = Calculator.DoFunction
-                (Calculator.DoOperation(currentNumber, secondNumber, currentOperation),
-                (Calculator.Function)RoundingMode.Value); 
+            result = Calculator1.DoFunction
+                (Calculator1.DoOperation(currentNumber, secondNumber, currentOperation),
+                (Calculator1.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
             currentNumber = result;  
         }
@@ -58,66 +58,66 @@ namespace Calculator
         private void button_sqrt_Click(object sender, EventArgs e)
         {
             currentNumber = double.Parse(Input.Text); 
-            result = Calculator.DoFunction(Calculator.DoFunction(currentNumber, Calculator.Function.Sqrt),
-                (Calculator.Function)RoundingMode.Value); 
+            result = Calculator1.DoFunction(Calculator1.DoFunction(currentNumber, Calculator1.Function.Sqrt),
+                (Calculator1.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
         }
 
         private void button_sin_Click(object sender, EventArgs e)
         {
             currentNumber = double.Parse(Input.Text); 
-            result = Calculator.DoFunction(Calculator.DoFunction(currentNumber, Calculator.Function.Sin),
-                (Calculator.Function)RoundingMode.Value); 
+            result = Calculator1.DoFunction(Calculator1.DoFunction(currentNumber, Calculator1.Function.Sin),
+                (Calculator1.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
         }
 
         private void button_cos_Click(object sender, EventArgs e)
         {
             currentNumber = double.Parse(Input.Text); 
-            result = Calculator.DoFunction(Calculator.DoFunction(currentNumber, Calculator.Function.Cos),
-                (Calculator.Function)RoundingMode.Value); 
+            result = Calculator1.DoFunction(Calculator1.DoFunction(currentNumber, Calculator1.Function.Cos),
+                (Calculator1.Function)RoundingMode.Value); 
             Input.Text = result.ToString();
         }
         
         //ОБРАБОТКА ОПЕРАЦИЙ
         private void button_add_Click(object sender, EventArgs e)
         {
-            currentOperation = Calculator.Operation.Add;
+            currentOperation = Calculator1.Operation.Add;
             currentNumber = double.Parse(Input.Text);
             Input.Text = "0";  
         }
 
         private void button_sub_Click(object sender, EventArgs e)
         {
-            currentOperation = Calculator.Operation.Subtract;
+            currentOperation = Calculator1.Operation.Subtract;
             currentNumber = double.Parse(Input.Text);
             Input.Text = "0";  
         }
 
         private void button_mul_Click(object sender, EventArgs e)
         {
-            currentOperation = Calculator.Operation.Multiply;
+            currentOperation = Calculator1.Operation.Multiply;
             currentNumber = double.Parse(Input.Text);
             Input.Text = "0"; 
         }
 
         private void button_div_Click(object sender, EventArgs e)
         {
-            currentOperation = Calculator.Operation.Divide;
+            currentOperation = Calculator1.Operation.Divide;
             currentNumber = double.Parse(Input.Text);
             Input.Text = "0";  
         }
 
         private void button_raise_Click(object sender, EventArgs e)
         {
-            currentOperation = Calculator.Operation.Power;
+            currentOperation = Calculator1.Operation.Power;
             currentNumber = double.Parse(Input.Text);
             Input.Text = "0";  
         }
 
         private void button_mod_Click(object sender, EventArgs e)
         {
-            currentOperation = Calculator.Operation.Modulo;
+            currentOperation = Calculator1.Operation.Modulo;
             currentNumber = double.Parse(Input.Text);
             Input.Text = "0"; 
         }

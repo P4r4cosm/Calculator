@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Calculator
 {
-    public class Calculator
+    public class Calculator1
     {
         public enum Operation
         {
