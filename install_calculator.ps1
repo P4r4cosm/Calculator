@@ -1,17 +1,41 @@
-# Установка кодировки для поддержки кириллицы
-[Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("UTF-8")
+# Путь для установки Git
+$installerUrl = "https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe"
+$installerPath = "$env:TEMP\GitInstaller.exe"
 
-# Укажите путь к Git
-$gitPath = "C:\Program Files\Git\cmd\git.exe"
+# Скачиваем установщик
+Write-Host "Downloading Git installer..."
+Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
 
-# Проверка и установка Git
+# Запускаем установку в тихом режиме
+Write-Host "Installing Git..."
+Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT" -Wait
+
+# Удаляем установочный файл
+Remove-Item -Path $installerPath
+
+# Добавляем Git в системный PATH
+$gitBinPath = "C:\Program Files\Git\bin"
+$currentPath = [System.Environment]::GetEnvironmentVariable("Path", [System.EnvironmentVariableTarget]::Machine)
+
+if (-not ($currentPath -contains $gitBinPath)) {
+    Write-Host "Adding Git to PATH..."
+    [System.Environment]::SetEnvironmentVariable("Path", "$currentPath;$gitBinPath", [System.EnvironmentVariableTarget]::Machine)
+}
+
+Write-Host "Git has been installed and added to PATH."
+
+# Установка Git
 Write-Host "Checking if Git is installed..."
+$gitPath = "C:\Program Files\Git\cmd\git.exe"
 if (-not (Test-Path -Path $gitPath)) {
     Write-Host "Git is not installed. Installing..."
-    Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/latest/download/Git-2.42.0-64-bit.exe" -OutFile "$env:TEMP\GitInstaller.exe"
+    Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe" -OutFile "$env:TEMP\GitInstaller.exe"
     Start-Process -FilePath "$env:TEMP\GitInstaller.exe" -ArgumentList "/VERYSILENT" -Wait
     Remove-Item -Path "$env:TEMP\GitInstaller.exe"
-    Write-Host "Git has been installed."
+
+    # Добавление Git в PATH
+    $env:Path += ";C:\Program Files\Git\cmd"
+    Write-Host "Git has been installed and added to PATH."
 } else {
     Write-Host "Git is already installed."
 }
@@ -52,10 +76,10 @@ Write-Host "Checking if the local repository exists..."
 $localRepoPath = "C:\Projects\Calculator"
 if (!(Test-Path -Path $localRepoPath)) {
     Write-Host "Local repository not found. Cloning..."
-    & $gitPath clone "https://github.com/P4r4cosm/Calculator.git" $localRepoPath
+    git clone "https://github.com/P4r4cosm/Calculator.git" $localRepoPath
 } else {
     Set-Location -Path $localRepoPath
-    & $gitPath pull
+    git pull
 }
 
 # Восстановление NuGet пакетов
@@ -66,6 +90,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+
 # Сборка проекта
 Write-Host "Building the project..."
 & $msbuildPath "$localRepoPath\Calculator.sln" /p:Configuration=Release
@@ -74,7 +99,7 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Создание установщика с помощью Inno Setup
+# Создание установщика через Inno Setup
 Write-Host "Creating the installer..."
 $outputDir = "$localRepoPath\bin\Release"
 $installerScript = @"
@@ -99,7 +124,7 @@ $installerScript | Set-Content -Path $innoConfigPath
 
 & $isccPath $innoConfigPath
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Error occurred while creating the installer."
+    Write-Error "Error while creating the installer."
     exit 1
 }
 
