@@ -28,10 +28,16 @@ function Install-Tool {
 
 # Проверка и установка Git
 Write-Host "Проверка наличия Git..."
-if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+$gitPath = "C:\Program Files\Git\bin\git.exe"
+if (-not (Test-Path -Path $gitPath)) {
+    Write-Host "Git не найден. Устанавливаем..."
     Install-Tool -Url "https://github.com/git-for-windows/git/releases/latest/download/Git-2.42.0-64-bit.exe" `
                  -InstallerPath "$env:TEMP\GitInstaller.exe" `
                  -Arguments "/VERYSILENT"
+    
+    # Добавление Git в PATH
+    $env:Path += ";C:\Program Files\Git\bin"
+    Write-Host "Git установлен и добавлен в PATH."
 }
 
 # Проверка и установка MSBuild
