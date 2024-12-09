@@ -20,17 +20,6 @@ if (Get-Command git -ErrorAction SilentlyContinue) {
     Write-Host "Git has been installed."
 }
 
-# Проверка наличия ссылочных сборок для .NET Framework
-Write-Host "Checking if reference assemblies for .NET Framework 4.8 are available..."
-$referenceAssembliesPath = "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8"
-
-if (-not (Test-Path -Path $referenceAssembliesPath)) {
-    Write-Error "Reference assemblies for .NET Framework 4.8 are missing. Ensure that .NET Framework Developer Pack 4.8 is installed correctly. Visit https://aka.ms/msbuild/developerpacks for more information."
-    exit 1
-} else {
-    Write-Host "Reference assemblies for .NET Framework 4.8 are available."
-}
-
 # Проверка и установка MSBuild
 Write-Host "Checking if MSBuild is installed..."
 $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
@@ -86,6 +75,41 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+# Проверка наличия ссылочных сборок для .NET Framework
+Write-Host "Checking if reference assemblies for .NET Framework 4.8 are available..."
+$referenceAssembliesPath = "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8"
+
+if (-not (Test-Path -Path $referenceAssembliesPath)) {
+    # Путь к папке, куда будет скачан установщик
+    $downloadFolder = "$localRepoPath"
+
+    # Ссылка на файл в Яндекс.Облаке 
+    $installerUrl = "https://storage.yandexcloud.net/calc.install/NDP48-DevPack-ENU.exe"
+
+    # Путь, по которому будет сохранён установщик
+    $installerPath = "$downloadFolder\NDP48-DevPack-ENU.exe"
+
+    # Скачивание установщика
+    Write-Host "Downloading .NET Framework Developer Pack installer from Yandex Cloud..."
+    Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
+
+    # Проверка успешности скачивания
+    if (Test-Path -Path $installerPath) {
+        Write-Host "Installer downloaded successfully to $installerPath"
+    } else {
+        Write-Error "Failed to download the installer."
+        exit 1
+    }
+
+    # Запуск установщика .NET Framework Developer Pack
+    Write-Host "Launching the .NET Framework Developer Pack installer..."
+    Start-Process -FilePath $installerPath -Wait
+
+    Write-Host ".NET Framework Developer Pack installation completed. Resuming script execution..."
+} else {
+    Write-Host "Reference assemblies for .NET Framework 4.8 are available."
+}
+
 # Сборка проекта
 Write-Host "Building the project..."
 & $msbuildPath "$localRepoPath\Calculator.sln" /p:Configuration=Release
@@ -93,6 +117,7 @@ if ($LASTEXITCODE -ne 0) {
     Write-Error "Project build failed."
     exit 1
 }
+
 # Создание установочного файла через Inno Setup
 Write-Host "Creating the installer..."
 $outputDir = "$localRepoPath"
@@ -132,20 +157,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Installer has been created successfully. Check the output directory: $outputDir"
-
-
-# Путь к созданному установщику
-$installerFilePath = "$outputDir\CalculatorInstaller.exe"
-
-# Проверка, что установочный файл существует
-#if (-not (Test-Path -Path $installerFilePath)) {
-#    Write-Error "Installer file not found at $installerFilePath. Something went wrong."
-#    exit 1
-#}
-
-# Запуск установщика
-#Write-Host "Launching the installer..."
-#Start-Process -FilePath $installerFilePath -Wait
-
 
 Write-Host "Script completed successfully."
