@@ -133,4 +133,19 @@ if ($LASTEXITCODE -ne 0) {
 
 Write-Host "Installer has been created successfully. Check the output directory: $outputDir"
 
+
+# Путь к созданному установщику
+$installerFilePath = "$outputDir\CalculatorInstaller.exe"
+
+# Проверка, что установочный файл существует
+#if (-not (Test-Path -Path $installerFilePath)) {
+#    Write-Error "Installer file not found at $installerFilePath. Something went wrong."
+#    exit 1
+#}
+
+# Запуск установщика
+#Write-Host "Launching the installer..."
+#Start-Process -FilePath $installerFilePath -Wait
+
+
 Write-Host "Script completed successfully."
