@@ -1,26 +1,21 @@
-# Проверка установленного Git
+
+# Check and install Git
 Write-Host "Checking if Git is installed..."
 $gitPath = "C:\Program Files\Git\cmd\git.exe"
-if (Get-Command git -ErrorAction SilentlyContinue) {
-    Write-Host "Git is already installed. Skipping installation."
-} else {
+if (-not (Test-Path -Path $gitPath)) {
     Write-Host "Git is not installed. Installing..."
-    $installerUrl = "https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe"
-    $installerPath = "$env:TEMP\GitInstaller.exe"
+    Invoke-WebRequest -Uri "https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/Git-2.47.1-64-bit.exe" -OutFile "$env:TEMP\GitInstaller.exe"
+    Start-Process -FilePath "$env:TEMP\GitInstaller.exe" -ArgumentList "/VERYSILENT" -Wait
+    Remove-Item -Path "$env:TEMP\GitInstaller.exe"
 
-    # Скачиваем установщик
-    Write-Host "Downloading Git installer..."
-    Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
-
-    # Установка
-    Write-Host "Installing Git..."
-    Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT" -Wait
-
-    Remove-Item -Path $installerPath
-    Write-Host "Git has been installed."
+    # Add Git to PATH
+    $env:Path += ";C:\Program Files\Git\cmd"
+    Write-Host "Git has been installed and added to PATH."
+} else {
+    Write-Host "Git is already installed."
 }
 
-# Проверка и установка MSBuild
+# Check and install MSBuild
 Write-Host "Checking if MSBuild is installed..."
 $msbuildPath = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
 if (-not (Test-Path -Path $msbuildPath)) {
@@ -28,7 +23,7 @@ if (-not (Test-Path -Path $msbuildPath)) {
     $installerUrl = "https://aka.ms/vs/17/release/vs_BuildTools.exe"
     $installerPath = "$env:TEMP\VSBuildToolsInstaller.exe"
 
-    # Скачиваем и устанавливаем
+    # Download and install
     Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
     Start-Process -FilePath $installerPath -ArgumentList "--quiet --norestart --add Microsoft.VisualStudio.Workload.MSBuildTools" -Wait
 
@@ -36,7 +31,7 @@ if (-not (Test-Path -Path $msbuildPath)) {
     Write-Host "MSBuild has been installed."
 }
 
-# Проверка и установка NuGet
+# Check and install NuGet
 Write-Host "Checking if NuGet is installed..."
 $nugetPath = "$env:TEMP\nuget.exe"
 if (-not (Test-Path -Path $nugetPath)) {
@@ -45,7 +40,7 @@ if (-not (Test-Path -Path $nugetPath)) {
     Write-Host "NuGet has been installed."
 }
 
-# Проверка и установка Inno Setup
+# Check and install Inno Setup
 Write-Host "Checking if Inno Setup is installed..."
 $isccPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
 if (-not (Test-Path -Path $isccPath)) {
@@ -56,7 +51,7 @@ if (-not (Test-Path -Path $isccPath)) {
     Write-Host "Inno Setup has been installed."
 }
 
-# Проверка локального репозитория
+# Check for the local repository
 Write-Host "Checking if the local repository exists..."
 $localRepoPath = "C:\Projects\Calculator"
 if (-not (Test-Path -Path $localRepoPath)) {
@@ -67,7 +62,7 @@ if (-not (Test-Path -Path $localRepoPath)) {
     git pull
 }
 
-# Восстановление NuGet пакетов
+# Restore NuGet packages
 Write-Host "Restoring NuGet packages..."
 & $nugetPath restore "$localRepoPath\Calculator.sln"
 if ($LASTEXITCODE -ne 0) {
@@ -75,25 +70,25 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Проверка наличия ссылочных сборок для .NET Framework
+# Check for .NET Framework reference assemblies
 Write-Host "Checking if reference assemblies for .NET Framework 4.8 are available..."
 $referenceAssembliesPath = "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8"
 
 if (-not (Test-Path -Path $referenceAssembliesPath)) {
-    # Путь к папке, куда будет скачан установщик
+    # Path to the folder where the installer will be downloaded
     $downloadFolder = "$localRepoPath"
 
-    # Ссылка на файл в Яндекс.Облаке 
+    # Link to the file in Yandex.Cloud
     $installerUrl = "https://storage.yandexcloud.net/calc.install/NDP48-DevPack-ENU.exe"
 
-    # Путь, по которому будет сохранён установщик
+    # Path where the installer will be saved
     $installerPath = "$downloadFolder\NDP48-DevPack-ENU.exe"
 
-    # Скачивание установщика
+    # Download the installer
     Write-Host "Downloading .NET Framework Developer Pack installer from Yandex Cloud..."
     Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath
 
-    # Проверка успешности скачивания
+    # Verify successful download
     if (Test-Path -Path $installerPath) {
         Write-Host "Installer downloaded successfully to $installerPath"
     } else {
@@ -101,16 +96,16 @@ if (-not (Test-Path -Path $referenceAssembliesPath)) {
         exit 1
     }
 
-    # Запуск установщика .NET Framework Developer Pack
-    Write-Host "Launching the .NET Framework Developer Pack installer..."
-    Start-Process -FilePath $installerPath -Wait
+    # Launch the .NET Framework Developer Pack installer in silent mode
+    Write-Host "Launching the .NET Framework Developer Pack installer in silent mode..."
+    Start-Process -FilePath $installerPath -ArgumentList "/quiet", "/norestart" -Wait
 
     Write-Host ".NET Framework Developer Pack installation completed. Resuming script execution..."
 } else {
     Write-Host "Reference assemblies for .NET Framework 4.8 are available."
 }
 
-# Сборка проекта
+# Build the project
 Write-Host "Building the project..."
 & $msbuildPath "$localRepoPath\Calculator.sln" /p:Configuration=Release
 if ($LASTEXITCODE -ne 0) {
@@ -118,9 +113,11 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
-# Создание установочного файла через Inno Setup
+# Create an installer with Inno Setup
 Write-Host "Creating the installer..."
 $outputDir = "$localRepoPath"
+$sourceFilesDir = "$outputDir\bin\Release"
+
 $installerScript = @"
 [Setup]
 AppName=Calculator
@@ -133,7 +130,7 @@ Compression=lzma
 SolidCompression=yes
 
 [Files]
-Source: "$outputDir\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "$sourceFilesDir\*"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\Calculator"; Filename: "{app}\Calculator.exe"
@@ -142,13 +139,13 @@ Name: "{group}\Calculator"; Filename: "{app}\Calculator.exe"
 $innoConfigPath = "$outputDir\CalculatorInstaller.iss"
 $installerScript | Set-Content -Path $innoConfigPath
 
-# Проверка наличия ISCC.exe
+# Check if ISCC.exe exists
 if (-not (Test-Path -Path $isccPath)) {
     Write-Error "Inno Setup is not installed or not found at '$isccPath'."
     exit 1
 }
 
-# Компиляция установщика
+# Compile the installer
 Write-Host "Compiling the installer..."
 & $isccPath $innoConfigPath
 if ($LASTEXITCODE -ne 0) {
